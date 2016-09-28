@@ -8,6 +8,7 @@ import Html.Events exposing (onClick)
 import Task
 import VirtualDom
 import Window
+import Keyboard exposing (KeyCode)
 import List exposing (map)
 import String exposing (join)
 import Json.Decode as Json exposing ((:=))
@@ -32,6 +33,7 @@ type Msg
     | WindowSize Window.Size
     | MouseMove Position
     | Clicked Position
+    | KeyPress Keyboard.KeyCode
 
 main : Program Never
 main =
@@ -62,6 +64,12 @@ update msg model =
         Clicked pos ->
             ( { model | points = pos :: model.points }, Cmd.none )
 
+        KeyPress 110 ->
+            ({model| points = []}, Cmd.none)
+
+        KeyPress _ ->
+            (model, Cmd.none)
+
         _ ->
             Debug.crash "update"
 
@@ -87,7 +95,6 @@ scene model =
 offsetPosition : Json.Decoder Position
 offsetPosition =
     Json.object2 Position ("offsetX" := Json.int) ("offsetY" := Json.int)
-
 
 
 background : Model -> Svg.Svg Msg
@@ -119,4 +126,7 @@ tracker model =
         []
 
 subscriptions model =
-    Window.resizes WindowSize
+    Sub.batch
+        [Window.resizes WindowSize
+        , Keyboard.presses KeyPress]
+
