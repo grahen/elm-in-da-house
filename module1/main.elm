@@ -13,7 +13,6 @@ import List exposing (map)
 import String exposing (join)
 import Json.Decode as Json exposing ((:=))
 
-
 type alias Position =
     { x : Int, y : Int }
 
@@ -23,7 +22,6 @@ type alias Model =
     , pos : Position
     , points : List Position
     }
-
 
 marginScene =
  20
@@ -80,7 +78,6 @@ view model =
         , scene model
         ]
 
-
 scene : Model -> Html.Html Msg
 scene model =
     Svg.svg
@@ -96,7 +93,6 @@ offsetPosition : Json.Decoder Position
 offsetPosition =
     Json.object2 Position ("offsetX" := Json.int) ("offsetY" := Json.int)
 
-
 background : Model -> Svg.Svg Msg
 background model =
     Svg.rect
@@ -104,14 +100,12 @@ background model =
         , Svg.Attributes.height <| toString model.size.height
         , fill "gray"
         , VirtualDom.on "mousedown" (Json.map Clicked offsetPosition)
-  --      , VirtualDom.on "mousemove" (Json.map MouseMove offsetPosition)
         ]
         []
 
 
 options =
     { preventDefault = False, stopPropagation = False }
-
 
 getPoints: Model -> String
 getPoints model =
@@ -129,4 +123,3 @@ subscriptions model =
     Sub.batch
         [Window.resizes WindowSize
         , Keyboard.presses KeyPress]
-
